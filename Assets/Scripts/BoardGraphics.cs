@@ -15,12 +15,12 @@ public class BoardGraphics : MonoBehaviour
 
     public Color whiteColor;
     public Color blackColor;
-    public Color textColor;
     
     [Button]
     public void UpdateBoard()
     {
         if (squareParent == null) Initialize();
+        DestroyAllTexts();
         UpdateBoard(boardPosition, squareSize, isCenter);
     }
     
@@ -44,8 +44,7 @@ public class BoardGraphics : MonoBehaviour
     void CreateBoard(Vector2 offsetPosition, float size, bool center = true)
     {
         offsetPosition = center ? CalculateCenterOffset(size) : offsetPosition;
-
-        int index = 0;
+        
         for (int rank = 0; rank < BoardUtility.rank; rank++)
         for (int file = 0; file < BoardUtility.file; file++)
         {
@@ -53,8 +52,6 @@ public class BoardGraphics : MonoBehaviour
             Color color = (rank + file) % 2 == 0 ? blackColor : whiteColor;
             Transform squareTransform = CreateSquare(position, size, color);
             squares.Add(new Vector2(file, rank), squareTransform);
-            CreateText(index.ToString(), textColor , file, rank);
-            index++;
         }
     }
 
@@ -80,7 +77,7 @@ public class BoardGraphics : MonoBehaviour
         if (squareParent.childCount == 0) CreateBoard(offsetPosition, size, center);
     }
 
-    void CreateText(string text, Color color, int file, int rank)
+    public void CreateText(string text, Color color, int file, int rank)
     {
         Vector2 cord = new Vector2(file, rank);
         if (squares.ContainsKey(cord))
@@ -119,8 +116,7 @@ public class BoardGraphics : MonoBehaviour
             if (squares[cord].childCount > 0) DestroyImmediate(squares[cord].GetChild(0).gameObject);;
         }
     }
-
-    [Button]
+    
     void DestroyAllTexts()
     {
         for (int rank = 0; rank < BoardUtility.rank; rank++)
